@@ -10,18 +10,18 @@ namespace AzureAppConfigurationChatBot.Services
     public class AzureOpenAIService : IOpenAIService
     {
         private readonly AzureOpenAIClient _client;
-        private readonly AIModelConfiguration _modelConfiguration;
+        private readonly IOptionsMonitor<AIModelConfiguration> _modelConfiguration;
 
         public AzureOpenAIService(
             IOptions<AzureOpenAiConnectionInfo> connectionInfo,
-            IOptions<AIModelConfiguration> modelConfiguration)
+            IOptionsMonitor<AIModelConfiguration> modelConfiguration)
         {
             if (connectionInfo?.Value == null)
             {
                 throw new ArgumentNullException(nameof(connectionInfo));
             }
 
-            _modelConfiguration = modelConfiguration?.Value ??
+            _modelConfiguration = modelConfiguration ??
                 throw new ArgumentNullException(nameof(modelConfiguration));
 
             string endpoint = connectionInfo.Value.Endpoint;
@@ -40,7 +40,7 @@ namespace AzureAppConfigurationChatBot.Services
 
             // Add configured messages to the context
             foreach (MessageConfiguration messageConfiguration in
-                _modelConfiguration.Messages.Where(x => x.Role == "system"))
+                _modelConfiguration.CurrentValue.Messages.Where(x => x.Role == "system"))
             {
                 messages.Add(new SystemChatMessage(messageConfiguration.Content));
             }
@@ -95,13 +95,13 @@ namespace AzureAppConfigurationChatBot.Services
 
         private async Task<ChatCompletion> GetCompletion(IEnumerable<ChatMessage> messages)
         {
-            ChatClient chatClient = _client.GetChatClient(_modelConfiguration.Model);
+            ChatClient chatClient = _client.GetChatClient(_modelConfiguration.CurrentValue.Model);
 
             // Create chat completion options if needed
             ChatCompletionOptions options = new ChatCompletionOptions
             {
-                Temperature = _modelConfiguration.Temperature,
-                MaxOutputTokenCount = _modelConfiguration.MaxCompletionTokens
+                Temperature = _modelConfiguration.CurrentValue.Temperature,
+                MaxOutputTokenCount = _modelConfiguration.CurrentValue.MaxCompletionTokens
             };
 
             // Call Azure OpenAI

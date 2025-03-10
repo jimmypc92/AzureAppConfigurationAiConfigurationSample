@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using AzureAppConfigurationChatBot.Models;
 using AzureAppConfigurationChatBot.Services;
+using Microsoft.Extensions.Options;
 
 namespace AzureAppConfigurationChatBot.Controllers
 {
@@ -10,11 +11,13 @@ namespace AzureAppConfigurationChatBot.Controllers
     {
         private readonly IOpenAIService _openAIService;
         private readonly ILogger<ChatController> _logger;
+        private readonly IOptionsMonitor<AIModelConfiguration> _modelConfiguration;
 
-        public ChatController(IOpenAIService openAIService, ILogger<ChatController> logger)
+        public ChatController(IOpenAIService openAIService, ILogger<ChatController> logger, IOptionsMonitor<AIModelConfiguration> modelConfiguration)
         {
             _openAIService = openAIService;
             _logger = logger;
+            _modelConfiguration = modelConfiguration;
         }
 
         [HttpPost]
@@ -35,6 +38,12 @@ namespace AzureAppConfigurationChatBot.Controllers
                 _logger.LogError(ex, "Error processing chat request");
                 return StatusCode(500, "An error occurred while processing your request");
             }
+        }
+
+        [HttpGet("model")]
+        public ActionResult<string> GetModelName()
+        {
+            return Ok(_modelConfiguration.CurrentValue.Model);
         }
     }
 }

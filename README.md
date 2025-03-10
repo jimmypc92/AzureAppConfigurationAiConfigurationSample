@@ -74,7 +74,7 @@ This repository contains a demo application that showcases integration with Azur
    - **Value**: `{Endpoint of Azure Open AI resource}`
 
    c. **Azure OpenAI API Key** (using Key Vault reference):
-   - **Key**: `AzureOpenAI:Key`
+   - **Key**: `AzureOpenAI:ApiKey`
    - **Value**: 
      ```json
      {

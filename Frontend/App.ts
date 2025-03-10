@@ -11,13 +11,14 @@ export class App {
   private messageHistory: ChatMessage[] = [];
   private isWaitingForResponse: boolean = false;
 
-  public init(): void {
-    this.render();
+  public async init(): Promise<void> {
+    const modelName = await this.fetchModelName();
+    this.render(modelName);
     this.bindElements();
     this.bindEvents();
   }
 
-  private render(): void {
+  private render(modelName: string): void {
     const app = document.getElementById('app');
     if (!app) return;
 
@@ -34,7 +35,7 @@ export class App {
             <img src="./assets/azure-app-configuration-icon.svg" alt="Azure App Configuration Logo" class="welcome-logo" />
             <h2 class="welcome-title">Welcome to Azure App Configuration AI Chat</h2>
             <p class="welcome-description">
-              I'm your AI assistant powered by Azure App Configuration. Ask me anything and I'll do my best to help you.
+              I'm your AI assistant powered by Azure App Configuration (model: ${modelName}). Ask me anything and I'll do my best to help you.
             </p>
           </div>
         </div>
@@ -83,6 +84,16 @@ export class App {
           this.sendButton.disabled = !this.chatInput?.value.trim();
         }
       });
+    }
+  }
+
+  private async fetchModelName(): Promise<string> {
+    try {
+      const response = await axios.get<string>('/api/chat/model');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching model name:', error);
+      return 'unknown';
     }
   }
 
