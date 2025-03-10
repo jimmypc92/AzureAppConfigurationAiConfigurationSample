@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using MicrosoftChatbot.Models;
-using MicrosoftChatbot.Services;
+using AzureAppConfigurationChatBot.Models;
+using AzureAppConfigurationChatBot.Services;
 
-namespace MicrosoftChatbot.Controllers
+namespace AzureAppConfigurationChatBot.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

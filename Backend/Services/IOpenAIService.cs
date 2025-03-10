@@ -1,6 +1,6 @@
-using MicrosoftChatbot.Models;
+using AzureAppConfigurationChatBot.Models;
 
-namespace MicrosoftChatbot.Services
+namespace AzureAppConfigurationChatBot.Services
 {
     public interface IOpenAIService
     {

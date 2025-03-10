@@ -1,6 +1,7 @@
 using Azure.Identity;
 using Microsoft.FeatureManagement;
-using MicrosoftChatbot.Services;
+using AzureAppConfigurationChatBot;
+using AzureAppConfigurationChatBot.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

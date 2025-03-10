@@ -1,11 +1,11 @@
 using Azure;
 using Azure.AI.OpenAI;
 using OpenAI.Chat;
-using MicrosoftChatbot.Models;
+using AzureAppConfigurationChatBot.Models;
 using Azure.Identity;
 using Microsoft.Extensions.Options;
 
-namespace MicrosoftChatbot.Services
+namespace AzureAppConfigurationChatBot.Services
 {
     public class AzureOpenAIService : IOpenAIService
     {

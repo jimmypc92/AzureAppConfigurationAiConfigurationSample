@@ -1,4 +1,4 @@
-namespace MicrosoftChatbot.Models
+namespace AzureAppConfigurationChatBot.Models
 {
     public class ChatbotMessage
     {
@@ -10,7 +10,7 @@ namespace MicrosoftChatbot.Models
     public class ChatRequest
     {
         public string Message { get; set; } = string.Empty;
-        public List<ChatbotMessage>? History { get; set; }
+        public List<ChatbotMessage> History { get; set; }
     }
 
     public class ChatResponse

@@ -24,17 +24,17 @@ export class App {
     app.innerHTML = `
       <header class="header">
         <div class="header-logo">
-          <img src="./assets/microsoft-icon.svg" alt="Microsoft Logo" />
-          <h1 class="header-title">Microsoft AI Chat</h1>
+          <img src="./assets/azure-app-configuration-icon.svg" alt="Azure App Configuration Logo" />
+          <h1 class="header-title">Azure App Configuration AI Chat</h1>
         </div>
       </header>
       <main class="chat-container">
         <div class="chat-messages" id="chat-messages">
           <div class="welcome-container">
-            <img src="./assets/microsoft-icon.svg" alt="Microsoft Logo" class="welcome-logo" />
-            <h2 class="welcome-title">Welcome to Microsoft AI Chat</h2>
+            <img src="./assets/azure-app-configuration-icon.svg" alt="Azure App Configuration Logo" class="welcome-logo" />
+            <h2 class="welcome-title">Welcome to Azure App Configuration AI Chat</h2>
             <p class="welcome-description">
-              I'm your AI assistant powered by Microsoft Azure OpenAI. Ask me anything and I'll do my best to help you.
+              I'm your AI assistant powered by Azure App Configuration. Ask me anything and I'll do my best to help you.
             </p>
           </div>
         </div>
