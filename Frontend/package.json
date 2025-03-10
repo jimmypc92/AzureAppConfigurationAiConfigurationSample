@@ -1,0 +1,23 @@
+{
+  "name": "microsoft-chatbot-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "marked": "^5.0.2",
+    "dompurify": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/dompurify": "^3.0.2",
+    "@types/marked": "^4.3.0",
+    "@types/node": "^20.2.5",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.9"
+  }
+}

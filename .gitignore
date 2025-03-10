@@ -1,0 +1,101 @@
+# .NET Core
+bin/
+obj/
+*.user
+*.suo
+.vs/
+**/bin
+**/obj
+*.dll
+*.exe
+*.pdb
+*.cache
+*.log
+*.vspscc
+*.vssscc
+_ReSharper*
+*.ReSharper*
+*.DotSettings.user
+
+# TypeScript
+*.js.map
+*.tsbuildinfo
+lib/
+dist/
+
+# NPM
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Vite
+.vite/
+dist/
+dist-ssr/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# Misc
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node dependencies
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# TypeScript
+*.tsbuildinfo
+.npm
+.eslintcache
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build output
+/build
+/out
+
+# Coverage reports
+/coverage
