@@ -5,7 +5,6 @@ using AzureAppConfigurationChatBot.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Use managed identity with DefaultAzureCredential if connection string not provided
 builder.Configuration.AddAzureAppConfiguration(options =>
 {
     var credential = new DefaultAzureCredential();

@@ -36,14 +36,7 @@ namespace AzureAppConfigurationChatBot.Services
         public async Task<ChatResponse> GetChatCompletionAsync(ChatRequest request)
         {
             // Create a list of messages from the history
-            var messages = new List<ChatMessage>();
-
-            // Add configured messages to the context
-            foreach (MessageConfiguration messageConfiguration in
-                _modelConfiguration.CurrentValue.Messages.Where(x => x.Role == "system"))
-            {
-                messages.Add(new SystemChatMessage(messageConfiguration.Content));
-            }
+            var messages = GetSystemMessages();
 
             // Add conversation history if available
             if (request.History != null)
@@ -91,6 +84,19 @@ namespace AzureAppConfigurationChatBot.Services
                 Message = responseContent,
                 History = history
             };
+        }
+
+        private List<ChatMessage> GetSystemMessages()
+        {
+            var messages = new List<ChatMessage>();
+
+            foreach (MessageConfiguration messageConfiguration in
+                _modelConfiguration.CurrentValue.Messages.Where(x => x.Role == "system"))
+            {
+                messages.Add(new SystemChatMessage(messageConfiguration.Content));
+            }
+
+            return messages;
         }
 
         private async Task<ChatCompletion> GetCompletion(IEnumerable<ChatMessage> messages)
