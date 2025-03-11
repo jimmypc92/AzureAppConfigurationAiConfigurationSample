@@ -2,6 +2,10 @@
 
 This repository contains a demo application that showcases integration with Azure OpenAI services using Azure App Configuration for dynamic AI model configuration.
 
+![Chat Interface Screenshot](Images/ChatScreenshot.png)
+
+![Configuration Screenshot](Images/ConfigurationScreenshot.png)
+
 ## Project Structure
 
 - **Backend**: .NET API that integrates with Azure OpenAI
