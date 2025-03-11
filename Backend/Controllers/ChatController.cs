@@ -11,9 +11,9 @@ namespace AzureAppConfigurationChatBot.Controllers
     {
         private readonly IOpenAIService _openAIService;
         private readonly ILogger<ChatController> _logger;
-        private readonly IOptionsMonitor<AIModelConfiguration> _modelConfiguration;
+        private readonly IOptionsMonitor<LLMConfiguration> _modelConfiguration;
 
-        public ChatController(IOpenAIService openAIService, ILogger<ChatController> logger, IOptionsMonitor<AIModelConfiguration> modelConfiguration)
+        public ChatController(IOpenAIService openAIService, ILogger<ChatController> logger, IOptionsMonitor<LLMConfiguration> modelConfiguration)
         {
             _openAIService = openAIService;
             _logger = logger;

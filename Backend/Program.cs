@@ -21,11 +21,11 @@ builder.Configuration.AddAzureAppConfiguration(options =>
         });
 });
 
-builder.Services.Configure<AzureOpenAiConnectionInfo>(
+builder.Services.Configure<AzureOpenAIConnectionInfo>(
     builder.Configuration.GetSection("AzureOpenAI"));
 
-builder.Services.Configure<AIModelConfiguration>(
-    builder.Configuration.GetSection("AIModelConfiguration"));
+builder.Services.Configure<LLMConfiguration>(
+    builder.Configuration.GetSection("ChatLLM"));
 
 // Add services to the container
 builder.Services.AddControllers();

@@ -4,7 +4,7 @@ namespace AzureAppConfigurationChatBot
     /// Represents connection information required to authenticate with Azure OpenAI services.
     /// This class contains the credentials and endpoint information needed to establish a connection.
     /// </summary>
-    public class AzureOpenAiConnectionInfo
+    public class AzureOpenAIConnectionInfo
     {
         /// <summary>
         /// Gets or sets the API key used for authentication with Azure OpenAI services.
@@ -23,7 +23,7 @@ namespace AzureAppConfigurationChatBot
     /// Represents configuration settings for interacting with a Large Language Model (LLM).
     /// This class defines parameters that control the behavior and output of AI model interactions.
     /// </summary>
-    public class AIModelConfiguration
+    public class LLMConfiguration
     {
         /// <summary>
         /// Gets or sets the identifier of the LLM to use for processing.

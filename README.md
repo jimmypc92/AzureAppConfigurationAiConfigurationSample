@@ -50,7 +50,7 @@ This repository contains a demo application that showcases integration with Azur
 2. Configure Azure App Configuration with the following settings:
 
    a. **AI Model Configuration**:
-   - **Key**: `AIModelConfiguration`
+   - **Key**: `ChatLLM`
    - **Value**: 
      ```json
      {

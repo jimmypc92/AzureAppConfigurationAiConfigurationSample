@@ -10,11 +10,11 @@ namespace AzureAppConfigurationChatBot.Services
     public class AzureOpenAIService : IOpenAIService
     {
         private readonly AzureOpenAIClient _client;
-        private readonly IOptionsMonitor<AIModelConfiguration> _modelConfiguration;
+        private readonly IOptionsMonitor<LLMConfiguration> _modelConfiguration;
 
         public AzureOpenAIService(
-            IOptions<AzureOpenAiConnectionInfo> connectionInfo,
-            IOptionsMonitor<AIModelConfiguration> modelConfiguration)
+            IOptions<AzureOpenAIConnectionInfo> connectionInfo,
+            IOptionsMonitor<LLMConfiguration> modelConfiguration)
         {
             if (connectionInfo?.Value == null)
             {
