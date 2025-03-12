@@ -48,6 +48,7 @@ body {
   z-index: 10;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .header-logo {
@@ -63,6 +64,25 @@ body {
 .header-title {
   font-size: 20px;
   font-weight: 600;
+}
+
+/* User badge styles */
+.user-badge {
+  background-color: var(--ms-light-blue);
+  color: var(--ms-dark-blue);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.user-badge::before {
+  content: '👤';
+  margin-right: 6px;
 }
 
 /* Chat container styles */
