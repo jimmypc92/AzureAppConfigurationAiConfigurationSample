@@ -4,6 +4,6 @@ namespace AzureAppConfigurationChatBot.Services
 {
     public interface IOpenAIService
     {
-        Task<ChatResponse> GetChatCompletionAsync(ChatRequest request);
+        ValueTask<ChatResponse> GetChatCompletionAsync(ChatRequest request, CancellationToken cancellationToken);
     }
 }

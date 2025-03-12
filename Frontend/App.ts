@@ -10,12 +10,20 @@ export class App {
   private chatForm: HTMLFormElement | null = null;
   private messageHistory: ChatMessage[] = [];
   private isWaitingForResponse: boolean = false;
+  private username: string | null = null;
 
   public async init(): Promise<void> {
+    // Extract username from query string if present
+    this.username = this.getUsernameFromUrl();
     const modelName = await this.fetchModelName();
     this.render(modelName);
     this.bindElements();
     this.bindEvents();
+  }
+
+  private getUsernameFromUrl(): string | null {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('username');
   }
 
   private render(modelName: string): void {
@@ -89,7 +97,8 @@ export class App {
 
   private async fetchModelName(): Promise<string> {
     try {
-      const response = await axios.get<string>('/api/chat/model');
+      const url = `/api/chat/model?username=${this.username}`;
+      const response = await axios.get<string>(url);
       return response.data;
     } catch (error) {
       console.error('Error fetching model name:', error);
@@ -132,7 +141,8 @@ export class App {
         history: this.messageHistory
       };
 
-      const response = await axios.post<ChatResponse>('/api/chat', request);
+      const url = `/api/chat?username=${this.username}`;
+      const response = await axios.post<ChatResponse>(url, request);
       
       // Hide typing indicator
       this.hideTypingIndicator();

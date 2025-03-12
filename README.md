@@ -73,11 +73,31 @@ This repository contains a demo application that showcases integration with Azur
      Replace `{Azure Open AI deployment name}` with your actual deployment name.
    - **Content Type**: `application/json`
 
-   b. **Azure OpenAI Endpoint**:
+   b. **Secondary AI Model Configuration**:
+   - **Key**: `ChatLLM-2`
+   - **Value**: 
+     ```json
+     {
+       "model_provider": "azure_openai",
+       "model": "{2nd Azure Open AI deployment name}",
+       "temperature": 0.7,
+       "max_completion_tokens": 1000,
+       "messages": [
+         {
+           "role": "system",
+           "content": "You are a helpful Microsoft AI assistant. Be concise, professional, and informative."
+         }
+       ]
+     }
+     ```
+     Replace `{2nd Azure Open AI deployment name}` with your second deployment name.
+   - **Content Type**: `application/json`
+
+   c. **Azure OpenAI Endpoint**:
    - **Key**: `AzureOpenAI:Endpoint`
    - **Value**: `{Endpoint of Azure Open AI resource}`
 
-   c. **Azure OpenAI API Key** (using Key Vault reference):
+   d. **Azure OpenAI API Key** (using Key Vault reference):
    - **Key**: `AzureOpenAI:ApiKey`
    - **Value**: 
      ```json
@@ -86,6 +106,13 @@ This repository contains a demo application that showcases integration with Azur
      }
      ```
    - **Content Type**: `application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8`
+
+   e. **Feature Flag Configuration**:
+   - **Feature Name**: `NewChatLLMVersion` (Feature Flag)
+   - Configure this feature flag with targeting filter:
+     - Target the user named 'jeff' directly
+     - Ensure the flag is enabled
+   - This flag controls which LLM configuration (ChatLLM or ChatLLM-2) is used by the application
 
 ### 3. Authentication Setup
 

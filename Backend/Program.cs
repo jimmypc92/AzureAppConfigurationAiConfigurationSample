@@ -18,6 +18,10 @@ builder.Configuration.AddAzureAppConfiguration(options =>
         .ConfigureKeyVault(kv =>
         {
             kv.SetCredential(credential);
+        })
+        .UseFeatureFlags(ff =>
+        {
+            ff.SetRefreshInterval(TimeSpan.FromSeconds(10));
         });
 });
 
@@ -25,7 +29,12 @@ builder.Services.Configure<AzureOpenAIConnectionInfo>(
     builder.Configuration.GetSection("AzureOpenAI"));
 
 builder.Services.Configure<LLMConfiguration>(
-    builder.Configuration.GetSection("ChatLLM"));
+    Features.ChatLLMConfigurationName,
+    builder.Configuration.GetSection(Features.ChatLLMConfigurationName));
+
+builder.Services.Configure<LLMConfiguration>(
+    Features.ChatLLM2ConfigurationName,
+    builder.Configuration.GetSection(Features.ChatLLM2ConfigurationName));
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -34,7 +43,12 @@ builder.Services.AddControllers();
 builder.Services.AddAzureAppConfiguration();
 
 // Add Feature Management services
-builder.Services.AddFeatureManagement();
+builder.Services.AddFeatureManagement()
+    .WithTargeting();
+
+// Set up query string authentication for demonstration
+builder.Services.AddAuthentication(defaultScheme: Schemes.QueryString)
+        .AddQueryString();
 
 // Register OpenAI service
 builder.Services.AddSingleton<IOpenAIService, AzureOpenAIService>();

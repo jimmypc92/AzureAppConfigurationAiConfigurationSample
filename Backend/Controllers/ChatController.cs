@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using AzureAppConfigurationChatBot.Models;
 using AzureAppConfigurationChatBot.Services;
 using Microsoft.Extensions.Options;
+using Microsoft.FeatureManagement;
 
 namespace AzureAppConfigurationChatBot.Controllers
 {
@@ -12,12 +13,18 @@ namespace AzureAppConfigurationChatBot.Controllers
         private readonly IOpenAIService _openAIService;
         private readonly ILogger<ChatController> _logger;
         private readonly IOptionsMonitor<LLMConfiguration> _modelConfiguration;
+        private readonly IVariantFeatureManagerSnapshot _featureManager;
 
-        public ChatController(IOpenAIService openAIService, ILogger<ChatController> logger, IOptionsMonitor<LLMConfiguration> modelConfiguration)
+        public ChatController(
+            IOpenAIService openAIService,
+            ILogger<ChatController> logger,
+            IOptionsMonitor<LLMConfiguration> modelConfiguration,
+            IVariantFeatureManagerSnapshot featureManager)
         {
             _openAIService = openAIService;
             _logger = logger;
             _modelConfiguration = modelConfiguration;
+            _featureManager = featureManager;
         }
 
         [HttpPost]
@@ -30,7 +37,7 @@ namespace AzureAppConfigurationChatBot.Controllers
                     return BadRequest("Message cannot be empty");
                 }
 
-                var response = await _openAIService.GetChatCompletionAsync(request);
+                var response = await _openAIService.GetChatCompletionAsync(request, HttpContext.RequestAborted);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -41,9 +48,16 @@ namespace AzureAppConfigurationChatBot.Controllers
         }
 
         [HttpGet("model")]
-        public ActionResult<string> GetModelName()
+        public async Task<ActionResult<string>> GetModelName()
         {
-            return Ok(_modelConfiguration.CurrentValue.Model);
+            return Ok((await GetLLMConfiguration(HttpContext.RequestAborted)).Model);
+        }
+
+        private async ValueTask<LLMConfiguration> GetLLMConfiguration(CancellationToken cancellationToken)
+        {
+            return (await _featureManager.IsEnabledAsync(Features.ChatbotLLMFeatureName, cancellationToken)) ?
+                _modelConfiguration.Get(Features.ChatLLM2ConfigurationName) :
+                _modelConfiguration.Get(Features.ChatLLMConfigurationName);
         }
     }
 }
