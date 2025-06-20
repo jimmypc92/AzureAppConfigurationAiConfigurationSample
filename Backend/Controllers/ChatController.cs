@@ -12,18 +12,18 @@ namespace AzureAppConfigurationChatBot.Controllers
     {
         private readonly IOpenAIService _openAIService;
         private readonly ILogger<ChatController> _logger;
-        private readonly IOptionsMonitor<LLMConfiguration> _modelConfiguration;
+        private readonly IOptionsMonitor<CompletionConfiguration> _completionConfiguration;
         private readonly IVariantFeatureManagerSnapshot _featureManager;
 
         public ChatController(
             IOpenAIService openAIService,
             ILogger<ChatController> logger,
-            IOptionsMonitor<LLMConfiguration> modelConfiguration,
+            IOptionsMonitor<CompletionConfiguration> completionConfiguration,
             IVariantFeatureManagerSnapshot featureManager)
         {
             _openAIService = openAIService;
             _logger = logger;
-            _modelConfiguration = modelConfiguration;
+            _completionConfiguration = completionConfiguration;
             _featureManager = featureManager;
         }
 
@@ -50,14 +50,14 @@ namespace AzureAppConfigurationChatBot.Controllers
         [HttpGet("model")]
         public async Task<ActionResult<string>> GetModelName()
         {
-            return Ok((await GetLLMConfiguration(HttpContext.RequestAborted)).Model);
+            return Ok((await GetCompletionConfiguration(HttpContext.RequestAborted)).Model);
         }
 
-        private async ValueTask<LLMConfiguration> GetLLMConfiguration(CancellationToken cancellationToken)
+        private async ValueTask<CompletionConfiguration> GetCompletionConfiguration(CancellationToken cancellationToken)
         {
-            return (await _featureManager.IsEnabledAsync(Features.ChatbotLLMFeatureName, cancellationToken)) ?
-                _modelConfiguration.Get(Features.ChatLLM2ConfigurationName) :
-                _modelConfiguration.Get(Features.ChatLLMConfigurationName);
+            return (await _featureManager.IsEnabledAsync(Features.CompletionFeatureName, cancellationToken)) ?
+                _completionConfiguration.Get(Features.SecondaryCompletionConfigurationName) :
+                _completionConfiguration.Get(Features.CompletionConfigurationName);
         }
     }
 }

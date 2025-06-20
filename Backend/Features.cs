@@ -1,6 +1,3 @@
-using Microsoft.Extensions.Options;
-using Microsoft.FeatureManagement;
-
 namespace AzureAppConfigurationChatBot
 {
     /// <summary>
@@ -9,9 +6,9 @@ namespace AzureAppConfigurationChatBot
     /// </summary>
     public static class Features
     {
-        public const string ChatbotLLMFeatureName = "NewChatLLMVersion";
+        public const string CompletionFeatureName = "UpdatedCompletionConfiguration";
 
-        public const string ChatLLMConfigurationName = "ChatLLM";
-        public const string ChatLLM2ConfigurationName = "ChatLLM-2";
+        public const string CompletionConfigurationName = "Chatbot:Completion";
+        public const string SecondaryCompletionConfigurationName = "Chatbot:Completion2";
     }
 }

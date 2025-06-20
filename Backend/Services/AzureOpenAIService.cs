@@ -11,12 +11,12 @@ namespace AzureAppConfigurationChatBot.Services
     public class AzureOpenAIService : IOpenAIService
     {
         private readonly AzureOpenAIClient _client;
-        private readonly IOptionsMonitor<LLMConfiguration> _modelConfiguration;
+        private readonly IOptionsMonitor<CompletionConfiguration> _completionConfiguration;
         private readonly IVariantFeatureManagerSnapshot _featureManager;
 
         public AzureOpenAIService(
             IOptions<AzureOpenAIConnectionInfo> connectionInfo,
-            IOptionsMonitor<LLMConfiguration> modelConfiguration,
+            IOptionsMonitor<CompletionConfiguration> completionConfiguration,
             IVariantFeatureManagerSnapshot featureManager)
         {
             if (connectionInfo?.Value == null)
@@ -24,13 +24,14 @@ namespace AzureAppConfigurationChatBot.Services
                 throw new ArgumentNullException(nameof(connectionInfo));
             }
 
-            _modelConfiguration = modelConfiguration ??
-                throw new ArgumentNullException(nameof(modelConfiguration));
+            _completionConfiguration = completionConfiguration ??
+                throw new ArgumentNullException(nameof(completionConfiguration));
 
             _featureManager = featureManager ??
                 throw new ArgumentNullException(nameof(featureManager));
 
             string endpoint = connectionInfo.Value.Endpoint;
+
             string key = connectionInfo.Value.ApiKey;
 
             // Use key authentication if key is provided, otherwise use DefaultAzureCredential
@@ -42,7 +43,7 @@ namespace AzureAppConfigurationChatBot.Services
         public async ValueTask<ChatResponse> GetChatCompletionAsync(ChatRequest request, CancellationToken cancellationToken)
         {
             // Create a list of messages from the history
-            var messages = await GetSystemMessages(cancellationToken);
+            List<ChatMessage> messages = new();
 
             // Add conversation history if available
             if (request.History != null)
@@ -92,43 +93,39 @@ namespace AzureAppConfigurationChatBot.Services
             };
         }
 
-        private async ValueTask<List<ChatMessage>> GetSystemMessages(CancellationToken cancellationToken)
-        {
-            var messages = new List<ChatMessage>();
-
-            var llmConfiguration = await GetLLMConfiguration(cancellationToken);
-
-            foreach (MessageConfiguration messageConfiguration in
-                llmConfiguration.Messages.Where(x => x.Role == "system"))
-            {
-                messages.Add(new SystemChatMessage(messageConfiguration.Content));
-            }
-
-            return messages;
-        }
-
         private async ValueTask<ChatCompletion> GetCompletion(IEnumerable<ChatMessage> messages, CancellationToken cancellationToken)
         {
-            var llmConfiguration = await GetLLMConfiguration(cancellationToken);
+            CompletionConfiguration completionConfiguration = await GetCompletionConfiguration(cancellationToken);
 
-            ChatClient chatClient = _client.GetChatClient(llmConfiguration.Model);
+            ChatClient chatClient = _client.GetChatClient(completionConfiguration.Model);
 
             // Create chat completion options if needed
             ChatCompletionOptions options = new ChatCompletionOptions
             {
-                Temperature = llmConfiguration.Temperature,
-                MaxOutputTokenCount = llmConfiguration.MaxCompletionTokens
+                Temperature = completionConfiguration.Temperature,
+                MaxOutputTokenCount = completionConfiguration.MaxCompletionTokens,
+                TopP = completionConfiguration.TopP
             };
+
+            //
+            // Prepend system messages
+            IEnumerable<ChatMessage> systemMessages = _completionConfiguration
+                .CurrentValue
+                .Messages
+                .Where(x => x.Role == "system")
+                .Select(x => new SystemChatMessage(x.Content));
+
+            messages = systemMessages.Concat(messages);
 
             // Call Azure OpenAI
             return await chatClient.CompleteChatAsync(messages, options, cancellationToken);
         }
 
-        private async ValueTask<LLMConfiguration> GetLLMConfiguration(CancellationToken cancellationToken)
+        private async ValueTask<CompletionConfiguration> GetCompletionConfiguration(CancellationToken cancellationToken)
         {
-            return (await _featureManager.IsEnabledAsync(Features.ChatbotLLMFeatureName, cancellationToken)) ?
-                _modelConfiguration.Get(Features.ChatLLM2ConfigurationName) :
-                _modelConfiguration.Get(Features.ChatLLMConfigurationName);
+            return (await _featureManager.IsEnabledAsync(Features.CompletionFeatureName, cancellationToken)) ?
+                _completionConfiguration.Get(Features.SecondaryCompletionConfigurationName) :
+                _completionConfiguration.Get(Features.CompletionConfigurationName);
         }
     }
 }
