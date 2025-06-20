@@ -37,12 +37,7 @@ namespace AzureAppConfigurationChatBot.Services
         public async Task<ChatResponse> GetChatCompletionAsync(ChatRequest request)
         {
             // Create a list of messages from the history
-            List<ChatMessage> messages = _completionConfiguration
-                .CurrentValue
-                .Messages
-                .Where(x => x.Role == "system")
-                .Select(x => new SystemChatMessage(x.Content))
-                .ToList<ChatMessage>();
+            List<ChatMessage> messages = new();
 
             // Add conversation history if available
             if (request.History != null)
