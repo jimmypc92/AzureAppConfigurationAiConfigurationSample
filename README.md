@@ -4,7 +4,7 @@ This repository contains a demo application that showcases integration with Azur
 
 ![Chat Interface Screenshot](Images/ChatScreenshot.png)
 
-![Configuration Screenshot](Images/ConfigurationScreenshot.png)
+![Configuration Screenshot](Images/ChatCompletionConfiguration.png)
 
 ## Project Structure
 
@@ -53,25 +53,10 @@ This repository contains a demo application that showcases integration with Azur
 
 2. Configure Azure App Configuration with the following settings:
 
-   a. **AI Model Configuration**:
-   - **Key**: `ChatLLM`
-   - **Value**: 
-     ```json
-     {
-       "model_provider": "azure_openai",
-       "model": "{Azure Open AI deployment name}",
-       "temperature": 0.7,
-       "max_completion_tokens": 1000,
-       "messages": [
-         {
-           "role": "system",
-           "content": "You are a helpful Microsoft AI assistant. Be concise, professional, and informative."
-         }
-       ]
-     }
-     ```
-     Replace `{Azure Open AI deployment name}` with your actual deployment name.
-   - **Content Type**: `application/json`
+   a. **Chat Completion Configuration**
+   - **Key**: `Chatbot:Completion`
+   - **Model**: `{Azure Open AI model (deployment name)}` (gpt-4 suggested)
+   - **System message content**: `You are a helpful AI assistant. Be concise, professional, and informative.`
 
    b. **Azure OpenAI Endpoint**:
    - **Key**: `AzureOpenAI:Endpoint`

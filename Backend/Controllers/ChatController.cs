@@ -11,13 +11,13 @@ namespace AzureAppConfigurationChatBot.Controllers
     {
         private readonly IOpenAIService _openAIService;
         private readonly ILogger<ChatController> _logger;
-        private readonly IOptionsMonitor<LLMConfiguration> _modelConfiguration;
+        private readonly IOptionsMonitor<CompletionConfiguration> _completionConfiguration;
 
-        public ChatController(IOpenAIService openAIService, ILogger<ChatController> logger, IOptionsMonitor<LLMConfiguration> modelConfiguration)
+        public ChatController(IOpenAIService openAIService, ILogger<ChatController> logger, IOptionsMonitor<CompletionConfiguration> completionConfiguration)
         {
             _openAIService = openAIService;
             _logger = logger;
-            _modelConfiguration = modelConfiguration;
+            _completionConfiguration = completionConfiguration;
         }
 
         [HttpPost]
@@ -43,7 +43,7 @@ namespace AzureAppConfigurationChatBot.Controllers
         [HttpGet("model")]
         public ActionResult<string> GetModelName()
         {
-            return Ok(_modelConfiguration.CurrentValue.Model);
+            return Ok(_completionConfiguration.CurrentValue.Model);
         }
     }
 }

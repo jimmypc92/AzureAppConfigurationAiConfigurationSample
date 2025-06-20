@@ -10,21 +10,22 @@ namespace AzureAppConfigurationChatBot.Services
     public class AzureOpenAIService : IOpenAIService
     {
         private readonly AzureOpenAIClient _client;
-        private readonly IOptionsMonitor<LLMConfiguration> _modelConfiguration;
+        private readonly IOptionsMonitor<CompletionConfiguration> _completionConfiguration;
 
         public AzureOpenAIService(
             IOptions<AzureOpenAIConnectionInfo> connectionInfo,
-            IOptionsMonitor<LLMConfiguration> modelConfiguration)
+            IOptionsMonitor<CompletionConfiguration> completionConfiguration)
         {
             if (connectionInfo?.Value == null)
             {
                 throw new ArgumentNullException(nameof(connectionInfo));
             }
 
-            _modelConfiguration = modelConfiguration ??
-                throw new ArgumentNullException(nameof(modelConfiguration));
+            _completionConfiguration = completionConfiguration ??
+                throw new ArgumentNullException(nameof(completionConfiguration));
 
             string endpoint = connectionInfo.Value.Endpoint;
+
             string key = connectionInfo.Value.ApiKey;
 
             // Use key authentication if key is provided, otherwise use DefaultAzureCredential
@@ -36,7 +37,12 @@ namespace AzureAppConfigurationChatBot.Services
         public async Task<ChatResponse> GetChatCompletionAsync(ChatRequest request)
         {
             // Create a list of messages from the history
-            var messages = GetSystemMessages();
+            List<ChatMessage> messages = _completionConfiguration
+                .CurrentValue
+                .Messages
+                .Where(x => x.Role == "system")
+                .Select(x => new SystemChatMessage(x.Content))
+                .ToList<ChatMessage>();
 
             // Add conversation history if available
             if (request.History != null)
@@ -86,29 +92,27 @@ namespace AzureAppConfigurationChatBot.Services
             };
         }
 
-        private List<ChatMessage> GetSystemMessages()
-        {
-            var messages = new List<ChatMessage>();
-
-            foreach (MessageConfiguration messageConfiguration in
-                _modelConfiguration.CurrentValue.Messages.Where(x => x.Role == "system"))
-            {
-                messages.Add(new SystemChatMessage(messageConfiguration.Content));
-            }
-
-            return messages;
-        }
-
         private async Task<ChatCompletion> GetCompletion(IEnumerable<ChatMessage> messages)
         {
-            ChatClient chatClient = _client.GetChatClient(_modelConfiguration.CurrentValue.Model);
+            ChatClient chatClient = _client.GetChatClient(_completionConfiguration.CurrentValue.Model);
 
             // Create chat completion options if needed
             ChatCompletionOptions options = new ChatCompletionOptions
             {
-                Temperature = _modelConfiguration.CurrentValue.Temperature,
-                MaxOutputTokenCount = _modelConfiguration.CurrentValue.MaxCompletionTokens
+                Temperature = _completionConfiguration.CurrentValue.Temperature,
+                MaxOutputTokenCount = _completionConfiguration.CurrentValue.MaxCompletionTokens,
+                TopP = _completionConfiguration.CurrentValue.TopP
             };
+
+            //
+            // Prepend system messages
+            IEnumerable<ChatMessage> systemMessages = _completionConfiguration
+                .CurrentValue
+                .Messages
+                .Where(x => x.Role == "system")
+                .Select(x => new SystemChatMessage(x.Content));
+
+            messages = systemMessages.Concat(messages);
 
             // Call Azure OpenAI
             return await chatClient.CompleteChatAsync(messages, options);

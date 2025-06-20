@@ -24,8 +24,8 @@ builder.Configuration.AddAzureAppConfiguration(options =>
 builder.Services.Configure<AzureOpenAIConnectionInfo>(
     builder.Configuration.GetSection("AzureOpenAI"));
 
-builder.Services.Configure<LLMConfiguration>(
-    builder.Configuration.GetSection("ChatLLM"));
+builder.Services.Configure<CompletionConfiguration>(
+    builder.Configuration.GetSection("Chatbot:Completion"));
 
 // Add services to the container
 builder.Services.AddControllers();
