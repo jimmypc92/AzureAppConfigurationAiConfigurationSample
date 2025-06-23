@@ -39,12 +39,15 @@ builder.Services.Configure<CompletionConfiguration>(
 // Add services to the container
 builder.Services.AddControllers();
 
+builder.Services.AddApplicationInsightsTelemetry();
+
 // Add Azure App Configuration services
 builder.Services.AddAzureAppConfiguration();
 
 // Add Feature Management services
 builder.Services.AddFeatureManagement()
-    .WithTargeting();
+    .WithTargeting()
+    .AddApplicationInsightsTelemetry();
 
 // Set up query string authentication for demonstration
 builder.Services.AddAuthentication(defaultScheme: Schemes.QueryString)
@@ -68,6 +71,9 @@ var app = builder.Build();
 
 // Use Azure App Configuration middleware
 app.UseAzureAppConfiguration();
+//
+// Add Targeting Id to HttpContext
+app.UseMiddleware<TargetingHttpContextMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowViteClient");
