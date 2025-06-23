@@ -12,12 +12,12 @@ namespace AzureAppConfigurationChatBot.Services
     {
         private readonly AzureOpenAIClient _client;
         private readonly IOptionsMonitor<CompletionConfiguration> _completionConfiguration;
-        private readonly IVariantFeatureManagerSnapshot _featureManager;
+        private readonly IVariantFeatureManager _featureManager;
 
         public AzureOpenAIService(
             IOptions<AzureOpenAIConnectionInfo> connectionInfo,
             IOptionsMonitor<CompletionConfiguration> completionConfiguration,
-            IVariantFeatureManagerSnapshot featureManager)
+            IVariantFeatureManager featureManager)
         {
             if (connectionInfo?.Value == null)
             {
@@ -109,8 +109,7 @@ namespace AzureAppConfigurationChatBot.Services
 
             //
             // Prepend system messages
-            IEnumerable<ChatMessage> systemMessages = _completionConfiguration
-                .CurrentValue
+            IEnumerable<ChatMessage> systemMessages = completionConfiguration
                 .Messages
                 .Where(x => x.Role == "system")
                 .Select(x => new SystemChatMessage(x.Content));
