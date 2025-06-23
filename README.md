@@ -50,7 +50,7 @@ This repository contains a demo application that showcases integration with Azur
 
 1. Update the `appsettings.json` file in the Backend directory:
    - Set the `AppConfig:Endpoint` property to your Azure App Configuration endpoint URL
-   - (Optional) Set up the Application Insights connection string to set up feature flag telemetry
+   - (Optional) Set up the Application Insights connection string `ApplicationInsights:ConnectionString` to set up feature flag telemetry
 
 2. Configure Azure App Configuration with the following settings:
 
