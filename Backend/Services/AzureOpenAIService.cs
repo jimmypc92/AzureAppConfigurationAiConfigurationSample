@@ -12,12 +12,12 @@ namespace AzureAppConfigurationChatBot.Services
     {
         private readonly AzureOpenAIClient _client;
         private readonly IConfiguration _configuration;
-        private readonly IVariantFeatureManagerSnapshot _featureManager;
+        private readonly IVariantFeatureManager _featureManager;
 
         public AzureOpenAIService(
             IOptions<AzureOpenAIConnectionInfo> connectionInfo,
             IConfiguration configuration,
-            IVariantFeatureManagerSnapshot featureManager)
+            IVariantFeatureManager featureManager)
         {
             if (connectionInfo?.Value == null)
             {
