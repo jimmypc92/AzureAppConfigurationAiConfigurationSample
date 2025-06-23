@@ -11,12 +11,12 @@ namespace AzureAppConfigurationChatBot.Services
     public class AzureOpenAIService : IOpenAIService
     {
         private readonly AzureOpenAIClient _client;
-        private readonly IOptionsMonitor<CompletionConfiguration> _completionConfiguration;
+        private readonly IConfiguration _configuration;
         private readonly IVariantFeatureManagerSnapshot _featureManager;
 
         public AzureOpenAIService(
             IOptions<AzureOpenAIConnectionInfo> connectionInfo,
-            IOptionsMonitor<CompletionConfiguration> completionConfiguration,
+            IConfiguration configuration,
             IVariantFeatureManagerSnapshot featureManager)
         {
             if (connectionInfo?.Value == null)
@@ -24,8 +24,8 @@ namespace AzureAppConfigurationChatBot.Services
                 throw new ArgumentNullException(nameof(connectionInfo));
             }
 
-            _completionConfiguration = completionConfiguration ??
-                throw new ArgumentNullException(nameof(completionConfiguration));
+            _configuration = configuration ??
+                throw new ArgumentNullException(nameof(configuration));
 
             _featureManager = featureManager ??
                 throw new ArgumentNullException(nameof(featureManager));
@@ -109,8 +109,7 @@ namespace AzureAppConfigurationChatBot.Services
 
             //
             // Prepend system messages
-            IEnumerable<ChatMessage> systemMessages = _completionConfiguration
-                .CurrentValue
+            IEnumerable<ChatMessage> systemMessages = completionConfiguration
                 .Messages
                 .Where(x => x.Role == "system")
                 .Select(x => new SystemChatMessage(x.Content));
@@ -123,9 +122,9 @@ namespace AzureAppConfigurationChatBot.Services
 
         private async ValueTask<CompletionConfiguration> GetCompletionConfiguration(CancellationToken cancellationToken)
         {
-            return (await _featureManager.IsEnabledAsync(Features.CompletionFeatureName, cancellationToken)) ?
-                _completionConfiguration.Get(Features.SecondaryCompletionConfigurationName) :
-                _completionConfiguration.Get(Features.CompletionConfigurationName);
+            Variant variant = await _featureManager.GetVariantAsync(Features.CompletionFeatureName, cancellationToken);
+
+            return _configuration.GetSection(variant.Configuration.Value).Get<CompletionConfiguration>();
         }
     }
 }

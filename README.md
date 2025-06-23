@@ -59,17 +59,21 @@ This repository contains a demo application that showcases integration with Azur
    - **Model**: `{Azure Open AI model (deployment name)}` (gpt-4 suggested)
    - **System message content**: `You are a helpful AI assistant. Be concise, professional, and informative.`
 
-
    b. **Secondary Chat Completion Configuration**
    - **Key**: `Chatbot:Completion2`
    - **Model**: `{2nd Azure Open AI model (deployment name)}` (gpt-4.1 suggested)
    - **System message content**: `You are a helpful AI assistant. Be concise, professional, and informative.`
 
-   c. **Azure OpenAI Endpoint**:
+   c. **Tertiary Chat Completion Configuration**
+   - **Key**: `Chatbot:Completion3`
+   - **Model**: `{2nd Azure Open AI model (deployment name)}` (gpt-4.1-mini suggested)
+   - **System message content**: `You are a helpful AI assistant. Be concise, professional, and informative.`
+
+   d. **Azure OpenAI Endpoint**:
    - **Key**: `AzureOpenAI:Endpoint`
    - **Value**: `{Endpoint of Azure Open AI resource}`
 
-   d. **Azure OpenAI API Key** (using Key Vault reference):
+   e. **Azure OpenAI API Key** (using Key Vault reference):
    - **Key**: `AzureOpenAI:ApiKey`
    - **Value**: 
      ```json
@@ -79,13 +83,18 @@ This repository contains a demo application that showcases integration with Azur
      ```
    - **Content Type**: `application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8`
 
-   e. **Feature Flag Configuration**:
-   - **Feature Name**: `UpdatedCompletionConfiguration` (Feature Flag)
-   - Configure this feature flag with targeting filter:
-     - Target the user named 'jeff' directly
-     - Ensure the flag is enabled
-     - (Optional) Enable telemetry on the flag if Application Insights connection string was set up in step 1
-   - This flag controls which chat completion configuration (Chatbot:Completion or Chatbot:Completion2) is used by the application
+   f. **Feature Flag Configuration**:
+   - **Feature Name**: `CompletionConfigurationVariant` (Feature Flag)
+   - Configure this feature flag with The following variants:
+     - name: One, Value: "Chatbot:Completion"
+     - name: Two, Value: "Chatbot:Completion2"
+     - name: Three, Value: "Chatbot:Completion3"
+   - Configure the following allocation
+      - one: 33%
+      - two: 33%
+      - three: 34%
+   - (Optional) Enable telemetry on the flag if Application Insights connection string was set up in step 1
+   - This flag controls which chat completion configuration is used by the application
 
 ### 3. Authentication Setup
 

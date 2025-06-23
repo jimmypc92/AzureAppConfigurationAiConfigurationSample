@@ -12,18 +12,18 @@ namespace AzureAppConfigurationChatBot.Controllers
     {
         private readonly IOpenAIService _openAIService;
         private readonly ILogger<ChatController> _logger;
-        private readonly IOptionsMonitor<CompletionConfiguration> _completionConfiguration;
+        private readonly IConfiguration _configuration;
         private readonly IVariantFeatureManagerSnapshot _featureManager;
 
         public ChatController(
             IOpenAIService openAIService,
             ILogger<ChatController> logger,
-            IOptionsMonitor<CompletionConfiguration> completionConfiguration,
+            IConfiguration configuration,
             IVariantFeatureManagerSnapshot featureManager)
         {
             _openAIService = openAIService;
             _logger = logger;
-            _completionConfiguration = completionConfiguration;
+            _configuration = configuration;
             _featureManager = featureManager;
         }
 
@@ -55,9 +55,9 @@ namespace AzureAppConfigurationChatBot.Controllers
 
         private async ValueTask<CompletionConfiguration> GetCompletionConfiguration(CancellationToken cancellationToken)
         {
-            return (await _featureManager.IsEnabledAsync(Features.CompletionFeatureName, cancellationToken)) ?
-                _completionConfiguration.Get(Features.SecondaryCompletionConfigurationName) :
-                _completionConfiguration.Get(Features.CompletionConfigurationName);
+            Variant variant = await _featureManager.GetVariantAsync(Features.CompletionFeatureName, cancellationToken);
+
+            return _configuration.GetSection(variant.Configuration.Value).Get<CompletionConfiguration>();
         }
     }
 }

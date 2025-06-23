@@ -28,14 +28,6 @@ builder.Configuration.AddAzureAppConfiguration(options =>
 builder.Services.Configure<AzureOpenAIConnectionInfo>(
     builder.Configuration.GetSection("AzureOpenAI"));
 
-builder.Services.Configure<CompletionConfiguration>(
-    Features.CompletionConfigurationName,
-    builder.Configuration.GetSection(Features.CompletionConfigurationName));
-
-builder.Services.Configure<CompletionConfiguration>(
-    Features.SecondaryCompletionConfigurationName,
-    builder.Configuration.GetSection(Features.SecondaryCompletionConfigurationName));
-
 // Add services to the container
 builder.Services.AddControllers();
 

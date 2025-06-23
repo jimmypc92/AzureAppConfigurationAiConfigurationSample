@@ -6,9 +6,6 @@ namespace AzureAppConfigurationChatBot
     /// </summary>
     public static class Features
     {
-        public const string CompletionFeatureName = "UpdatedCompletionConfiguration";
-
-        public const string CompletionConfigurationName = "Chatbot:Completion";
-        public const string SecondaryCompletionConfigurationName = "Chatbot:Completion2";
+        public const string CompletionFeatureName = "CompletionConfigurationVariant";
     }
 }
